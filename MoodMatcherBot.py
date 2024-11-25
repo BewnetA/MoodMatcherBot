@@ -38,7 +38,7 @@ spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
 print(f"Before7: why?")
 
 
-ffmpeg_path = os.get('FFMPEG_PATH', '/usr/local/bin/ffmpeg') 
+ffmpeg_path = os.getenv('FFMPEG_PATH', '/usr/local/bin/ffmpeg') 
 
 FFMPEG_PATH = ffmpeg_path        # local path{r"C:\Users\Bewnet\Downloads\ffmpeg-master-latest-win64-gpl\bin"}
 TELEGRAM_TOKEN = "7721272091:AAF0okX_gbCM1hgYd5pI9n0_Ww6goVuL4MY"
