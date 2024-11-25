@@ -11,6 +11,11 @@ import os
 import time
 import yt_dlp as youtube_dl
 from collections import defaultdict
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 print(f"Before: why?")
 
@@ -31,6 +36,8 @@ spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
     client_secret=SPOTIFY_CLIENT_SECRET
 ))
 print(f"Before7: why?")
+
+ffmpeg_path = os.getenv('FFMPEG_PATH', 'ffmpeg')
 
 FFMPEG_PATH = r"C:\Users\Bewnet\Downloads\ffmpeg-master-latest-win64-gpl\bin"
 TELEGRAM_TOKEN = "7721272091:AAF0okX_gbCM1hgYd5pI9n0_Ww6goVuL4MY"
@@ -423,6 +430,11 @@ async def message_handler(update: Update, context: CallbackContext):
         await search_from_youtube(song_name, update.message, 0)
 
 
+async def error_handler(update, context):
+    logger.error(msg="Exception while handling an update:", exc_info=context.error)
+
+
+
 def main():
 
     # Create an Application instance with your bot token
@@ -434,9 +446,10 @@ def main():
     application.add_handler(CommandHandler("help", help))
     application.add_handler(CallbackQueryHandler(button_callback))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, message_handler))
+    application.add_error_handler(error_handler)
 
     # Start the bot
-    application.run_polling()
+    application.run_polling(timeout=30, poll_interval=1)
 
 
 if __name__ == "__main__":
