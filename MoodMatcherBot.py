@@ -38,17 +38,10 @@ spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
 print(f"Before7: why?")
 
 
-<<<<<<< HEAD
 ffmpeg_path = os.getenv('FFMPEG_PATH', 'ffmpeg')
 
 FFMPEG_PATH = r"C:\Users\Bewnet\Downloads\ffmpeg-master-latest-win64-gpl\bin"
 
-
-=======
-ffmpeg_path = os.getenv('FFMPEG_PATH', '/usr/local/bin/ffmpeg') 
-
-FFMPEG_PATH = ffmpeg_path        # local path{r"C:\Users\Bewnet\Downloads\ffmpeg-master-latest-win64-gpl\bin"}
->>>>>>> 3c5277df40701eec262b83f4abe636217b55c368
 TELEGRAM_TOKEN = "7721272091:AAF0okX_gbCM1hgYd5pI9n0_Ww6goVuL4MY"
 print(f"Before8: why?")
 
@@ -302,6 +295,7 @@ async def download_song(song_name, message):
             youtube_url = yt_video_info.get("webpage_url")
 
         # Search and download from SoundCloud
+        song_name = song_name.replace("\"", "").replace("-", "").split(".")[0].strip()
         soundcloud_search_query = f"scsearch1:{song_name}"
         print(f"🔍 Searching and downloading \"{song_name}\" from SoundCloud...")
         with youtube_dl.YoutubeDL(ydl_opts_soundcloud) as ydl:
@@ -386,8 +380,9 @@ async def search_from_youtube(song_name, message, page=0):
 
         for item in page_items:
             formated_view = await format_number(item.get("view_count", "No data"))
+            title = item['title'][:60]
             button = InlineKeyboardButton(
-                f"{item['title']}:  👀 {formated_view} ", callback_data=item['id'])
+                f"{item['title']}:  \n 👀Views: {formated_view} ", callback_data=title)
             keyboard.append([button])  # Add each button as a row
 
         back_btn = InlineKeyboardButton('⬅️ Back', callback_data='back')
@@ -400,21 +395,21 @@ async def search_from_youtube(song_name, message, page=0):
         markup = InlineKeyboardMarkup(keyboard) # Add navigation buttons
 
         try:
-            if not message.audio:
-                await message.delete()
+            if not message.audio and page != 0:
+                await message.edit_text(f"Result of {song_name}: ", reply_markup=markup)
+            else:
+                await message.reply_text(f"Result of {song_name}: ", reply_markup=markup)
         except Exception as e:
-            print(f"I think message does not exist. Error: {e}")
-
-        temp_text = await message.reply_text(f"Result of {song_name}: ", reply_markup=markup)
+            print(f"Error updating message: {e}")
 
     except Exception as e:
         temp_text = await message.reply_text(f"An error occurred: {e}")
-        try:
-            await asyncio.sleep(3)
-            await temp_text.delete()
-        except Exception as e:
-            print(f"Error: {e}")
-            return
+        # try:
+        #     await asyncio.sleep(3)
+        #     await temp_text.delete()
+        # except Exception as e:
+        #     print(f"Error: {e}")
+        #     return
 
 
 
@@ -440,15 +435,16 @@ async def message_handler(update: Update, context: CallbackContext):
     print(f"mood = {mood}, update.text = {update.message.text}")
     if mood in specials:
         await suggest_by_mood(update, context, mood)
-        try:
-            await asyncio.sleep(3)
-            await update.message.delete()
-        except Exception as e:
-            print(f"Error: {e}")
-            return
+        # try:
+        #     await asyncio.sleep(3)
+        #     await update.message.delete()
+        # except Exception as e:
+        #     print(f"Error: {e}")
+        #     return
     else:
         song_name = update.message.text
         await search_from_youtube(song_name, update.message, 0)
+        await update.message.delete()
         return
 
 
