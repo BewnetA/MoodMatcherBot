@@ -433,6 +433,7 @@ async def message_handler(update: Update, context: CallbackContext):
     print(f"mood = {mood}, update.text = {update.message.text}")
     if mood in specials:
         await suggest_by_mood(update, context, mood)
+        await update.message.delete()
         # try:
         #     await asyncio.sleep(3)
         #     await update.message.delete()
