@@ -37,15 +37,11 @@ spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
 ))
 print(f"Before7: why?")
 
-<<<<<<< HEAD
+
 ffmpeg_path = os.getenv('FFMPEG_PATH', 'ffmpeg')
 
 FFMPEG_PATH = r"C:\Users\Bewnet\Downloads\ffmpeg-master-latest-win64-gpl\bin"
-=======
-ffmpeg_path = os.getenv('FFMPEG_PATH', 'ffmpeg') 
 
-FFMPEG_PATH = ffmpeg_path        # local path{r"C:\Users\Bewnet\Downloads\ffmpeg-master-latest-win64-gpl\bin"}
->>>>>>> 002d76e6db72ecde7dc25b57c33ba37640799b08
 TELEGRAM_TOKEN = "7721272091:AAF0okX_gbCM1hgYd5pI9n0_Ww6goVuL4MY"
 print(f"Before8: why?")
 
@@ -226,32 +222,40 @@ async def button_callback(update: Update, context: CallbackContext):
     if callback_data == "next":
         if current_page[chat_id] == 4:
             await message.reply_text("This is the last page!!")
+            return
         else:
             current_page[chat_id] += 1
             await search_from_youtube(search_title[chat_id], message, current_page[chat_id])
+            return
     elif callback_data == "back":
         if current_page[chat_id] == 0:
             await message.reply_text("This is the first page!!")
+            return
         else:
             current_page[chat_id] -= 1
             await search_from_youtube(search_title[chat_id], message, current_page[chat_id])
+            return
     elif callback_data == "close":
         try:
             await message.delete()
         except Exception as e:
             print(f"Failed to delete message: {e}")
+            return
     elif "genre" in callback_data:
         genre = callback_data.replace("genre", " ")
         genre = genre.strip()
         await update.callback_query.message.delete()
         await suggest_by_specific_genre(genre, update)
+        return
     elif "artist" in callback_data:
         song_name = callback_data.replace("artist", "").strip()
         await search_from_youtube(song_name, message, 0)
+        return
     else:
         temp = await message.reply_text("Downloading...")
         await download_song(callback_data, message)
         await temp.delete()
+        return
 
 
 async def download_song(song_name, message):
@@ -331,7 +335,7 @@ async def download_song(song_name, message):
                             ),
                             timeout=30,  # Timeout in seconds
                         )
-                        break
+                        return
                     except Exception as e:
                         print(f"Retry {i + 1}/3 failed: {e}")
                         await asyncio.sleep(5)
@@ -340,11 +344,13 @@ async def download_song(song_name, message):
             temp_text = await message.reply_text(f"❌ Could not find the audio file: {mp3_file_path}")
             await asyncio.sleep(10)
             await temp_text.delete()
+            return
 
     except Exception as e:
         temp_text = await message.reply_text(f"⚠️ An error occurred: {str(e)}")
         await asyncio.sleep(15)
         await temp_text.delete()
+        return
 
 
 async def search_from_youtube(song_name, message, page=0):
@@ -401,6 +407,7 @@ async def search_from_youtube(song_name, message, page=0):
             await temp_text.delete()
         except Exception as e:
             print(f"Error: {e}")
+            return
 
 
 
@@ -431,13 +438,16 @@ async def message_handler(update: Update, context: CallbackContext):
             await update.message.delete()
         except Exception as e:
             print(f"Error: {e}")
+            return
     else:
         song_name = update.message.text
         await search_from_youtube(song_name, update.message, 0)
+        return
 
 
 async def error_handler(update, context):
     logger.error(msg="Exception while handling an update:", exc_info=context.error)
+    return
 
 
 
