@@ -170,7 +170,7 @@ async def suggest_by_mood(update, context, feel=""):
         "energetic": ["hip-hop", "rock", 'rock-n-roll', "punk", "metal", "heavy-metal", "hard-rock", "psych-rock", "garage", "power-pop"],
         "nostalgic": ["british", "funk", "disco", "jazz", "soundtracks", "grunge"],
         "adventurous": ["world-music", "afrobeat", "samba", "indian", "turkish", "latin", "philippines-opm"],
-        "angry": ["punk", "metal", "industrial", "hardcore", "trap", "metalcore", "post-dubstep"],
+        "angry": ["punk", "metal", "industrial", "hardcore", "metalcore", "post-dubstep"],
         "mellow": ["folk", "acoustic", "indie", "chill", "ambient", "alt-rock", "mandopop", "soul"],
         "playful": ["children", "comedy", "disney", "anime", "k-pop", "j-pop", "j-idol", "holidays"],
         "focused": ["study", "idm", "electronic", "detroit-techno", "minimal-techno", "trance", "progressive-house"]
