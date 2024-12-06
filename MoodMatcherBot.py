@@ -17,19 +17,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-print(f"Before: why?")
-
 current_page = defaultdict(lambda: 0)
-print(f"Before2: why?")
 search_title = defaultdict(str)
-print(f"Before3: why?")
 search_list = {}
-print(f"Before4: why?")
 
-SPOTIFY_CLIENT_ID = "af7649e254f64ea599efaf7a4da70042"
-print(f"Before5: why?")
-SPOTIFY_CLIENT_SECRET = "acadba0539e7418b8ac98169e855f13e"
-print(f"Before6: why?")
+SPOTIFY_CLIENT_ID = "Client_ID from spotify"
+SPOTIFY_CLIENT_SECRET = "ID"
 
 spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
     client_id=SPOTIFY_CLIENT_ID,
@@ -40,7 +33,7 @@ print(f"Before7: why?")
 ffmpeg_path = os.getenv('FFMPEG_PATH', '/usr/bin/ffmpeg') 
 
 FFMPEG_PATH = ffmpeg_path        # local path{r"C:\Users\Bewnet\Downloads\ffmpeg-master-latest-win64-gpl\bin"}
-TELEGRAM_TOKEN = "7721272091:AAF0okX_gbCM1hgYd5pI9n0_Ww6goVuL4MY"
+TELEGRAM_TOKEN = "Bot_token"
 print(f"Before8: why?")
 
 session = requests.Session()
